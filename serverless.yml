@@ -29,3 +29,16 @@ custom:
       - CONTACT_PHOTO_S3_BUCKET
       - AWS_SIGNED_URL_EXPIRATION
       - AUTH0_JWKS_URL
+
+functions:
+  Auth:
+    handler: src/lambda/auth/auth0Authorizer.handler
+  
+  CreateContact:
+    handler: src/lambda/http/createContact.handler
+    events:
+      - http:
+          method: post
+          path: contacts
+          cors: true
+          authorizer: Auth
