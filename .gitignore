@@ -13,3 +13,6 @@ jspm_packages
 
 # macOS file storage
 **/.DS_Store
+
+# Env variables
+.env

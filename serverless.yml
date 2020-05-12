@@ -2,6 +2,7 @@ service:
   name: serverless-contact-list-app
 
 plugins:
+  - serverless-dotenv-plugin
   - serverless-webpack
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
@@ -14,4 +15,17 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 
+  environment:
+    CONTACT_LIST_TABLE: ${env:CONTACT_LIST_TABLE}-${self:provider.stage}
+    CONTACT_PHOTO_S3_BUCKET: ${env:CONTACT_PHOTO_S3_BUCKET}-${self:provider.stage}
+    AWS_SIGNED_URL_EXPIRATION: ${env:AWS_SIGNED_URL_EXPIRATION}
+    AUTH0_JWKS_URL: ${env:AUTH0_JWKS_URL}
 
+custom:
+  dotenv:
+    path: ./.env
+    include:
+      - CONTACT_LIST_TABLE
+      - CONTACT_PHOTO_S3_BUCKET
+      - AWS_SIGNED_URL_EXPIRATION
+      - AUTH0_JWKS_URL
