@@ -1,0 +1,17 @@
+service:
+  name: serverless-contact-list-app
+
+plugins:
+  - serverless-webpack
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
+  - serverless-iam-roles-per-function
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+
+
