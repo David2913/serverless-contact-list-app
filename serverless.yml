@@ -16,8 +16,9 @@ provider:
   region: ${opt:region, 'us-east-1'}
 
   environment:
-    CONTACT_LIST_TABLE: ${env:CONTACT_LIST_TABLE}-${self:provider.stage}
-    CONTACT_PHOTO_S3_BUCKET: ${env:CONTACT_PHOTO_S3_BUCKET}-${self:provider.stage}
+    CONTACT_LIST_TABLE_NAME: ${env:CONTACT_LIST_TABLE}-Table-${self:provider.stage}
+    CONTACT_ID_INDEX_NAME: ${env:CONTACT_LIST_TABLE}-Table-Id-Index-${self:provider.stage}
+    CONTACT_PHOTO_S3_BUCKET_NAME: ${env:CONTACT_PHOTO_S3_BUCKET}-${self:provider.stage}
     AWS_SIGNED_URL_EXPIRATION: ${env:AWS_SIGNED_URL_EXPIRATION}
     AUTH0_JWKS_URL: ${env:AUTH0_JWKS_URL}
 
@@ -42,3 +43,32 @@ functions:
           path: contacts
           cors: true
           authorizer: Auth
+  
+resources:
+  Resources:
+    ContactsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: name
+            AttributeType: S
+          - AttributeName: contactId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: name
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.CONTACT_LIST_TABLE_NAME}
+        LocalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.CONTACT_ID_INDEX_NAME}
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+              - AttributeName: contactId
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
