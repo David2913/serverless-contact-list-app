@@ -30,6 +30,16 @@ custom:
       - CONTACT_PHOTO_S3_BUCKET
       - AWS_SIGNED_URL_EXPIRATION
       - AUTH0_JWKS_URL
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: Contact list API
+        description: Serverless application to manage todos
+    models:
+      - name: CreateContactRequest
+        contentType: application/json
+        schema: ${file(validators/create-contact-request.json)}
 
 functions:
   Auth:
@@ -43,6 +53,12 @@ functions:
           path: contacts
           cors: true
           authorizer: Auth
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new user contact
+            description: Create a new user contact
+            requestModels:
+              'application/json': CreateContactRequest
   
 resources:
   Resources:
@@ -103,3 +119,21 @@ resources:
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.CONTACT_PHOTO_S3_BUCKET_NAME}/*'
         Bucket: !Ref ContactPhotosBucket
+    RequestBodyValidator:
+      Type: AWS::ApiGateway::RequestValidator
+      Properties:
+        Name: 'request-body-validator'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: false
+    GatewayResponseDefault4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
