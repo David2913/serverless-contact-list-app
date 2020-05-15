@@ -22,3 +22,7 @@ export async function createOrReplaceContact(
 
   return contactItem;
 }
+
+export async function getUserContacts(userId: string): Promise<ContactItem[]> {
+  return contactsAccess.getContactsByUserId(userId);
+}

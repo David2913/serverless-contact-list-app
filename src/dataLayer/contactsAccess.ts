@@ -22,4 +22,20 @@ export class ContactsAccess {
     }).promise();
     return contactItem;
   }
+
+  async getContactsByUserId(userId: string): Promise<ContactItem[]> {
+    logger.info(`Obtaining user contacts ${userId}`);
+
+    const result = await this.docClient.query({
+      TableName: this.contactsTable,
+      KeyConditionExpression: 'userId = :userId',
+      ExpressionAttributeValues: {
+        ':userId': userId,
+      },
+      ScanIndexForward: false,
+    }).promise();
+
+    const items = result.Items;
+    return items as ContactItem[];
+  }
 }

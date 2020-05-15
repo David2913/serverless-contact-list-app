@@ -64,6 +64,19 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CONTACT_LIST_TABLE_NAME}
+  GetContacts:
+    handler: src/lambda/http/getContacts.handler
+    events:
+      - http:
+          method: get
+          path: contacts
+          cors: true
+          authorizer: Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CONTACT_LIST_TABLE_NAME}
   
 resources:
   Resources:
