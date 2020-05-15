@@ -35,7 +35,7 @@ custom:
       info:
         version: v1.0.0
         title: Contact list API
-        description: Serverless application to manage todos
+        description: Serverless application to manage contacts
     models:
       - name: CreateContactRequest
         contentType: application/json
@@ -45,7 +45,7 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
   
-  CreateContact:
+  AddContact:
     handler: src/lambda/http/createContact.handler
     events:
       - http:
@@ -59,6 +59,11 @@ functions:
             description: Create a new user contact
             requestModels:
               'application/json': CreateContactRequest
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CONTACT_LIST_TABLE_NAME}
   
 resources:
   Resources:
