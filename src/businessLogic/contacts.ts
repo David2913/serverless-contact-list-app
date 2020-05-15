@@ -26,3 +26,11 @@ export async function createOrReplaceContact(
 export async function getUserContacts(userId: string): Promise<ContactItem[]> {
   return contactsAccess.getContactsByUserId(userId);
 }
+
+export async function deleteUserContact(
+  userId: string,
+  contactId: string,
+): Promise<any> {
+  const contactItem: ContactItem = await contactsAccess.getUserContactById(userId, contactId);
+  await contactsAccess.deleteContact(contactItem);
+}
