@@ -5,6 +5,7 @@ import { ContactItem} from '../models/ContactItem';
 import { CreateContactRequest } from '../requests/CreateContactRequest';
 import { UpdateContactRequest } from '../requests/UpdateContactRequest';
 import { ContactsAccess } from '../dataLayer/contactsAccess';
+import { ContactPhotoMetadata, generateUploadUrl } from '../dataLayer/contactsFileStorage';
 
 const contactsAccess = new ContactsAccess();
 
@@ -48,4 +49,17 @@ export async function updateUserContact(
 
   const updatedContactItem: ContactItem = await contactsAccess.putContact(contactItem);
   return updatedContactItem;
+}
+
+export async function generateContactUploadUrl(
+  userId: string,
+  contactId: string,
+): Promise<string> {
+  const contactItem: ContactItem = await contactsAccess.getUserContactById(userId, contactId);
+  const uploadMetadata: ContactPhotoMetadata = generateUploadUrl(contactItem.contactId);
+
+  contactItem.photoUrl = uploadMetadata.objectUrl;
+  await contactsAccess.putContact(contactItem);
+
+  return uploadMetadata.uploadUrl;
 }
