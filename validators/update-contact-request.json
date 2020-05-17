@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "contact",
+  "type": "object",
+  "properties": {
+    "phone": {
+      "type": "string"
+    },
+    "photoUrl": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "phone"
+  ],
+  "additionalProperties": false
+}
