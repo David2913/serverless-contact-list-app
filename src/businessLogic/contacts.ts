@@ -45,7 +45,7 @@ export async function updateUserContact(
   const contactItem: ContactItem = await contactsAccess.getUserContactById(userId, contactId);
 
   contactItem.phone = updateRequest.phone;
-  contactItem.photoUrl = updateRequest.photoUrl;
+  contactItem.photoUrl = updateRequest.photoUrl || contactItem.photoUrl;
 
   const updatedContactItem: ContactItem = await contactsAccess.putContact(contactItem);
   return updatedContactItem;
